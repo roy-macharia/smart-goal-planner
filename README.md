@@ -12,3 +12,8 @@ A Fintech-friendly React application that allows users to manage multiple saving
 -  Deadline tracking (warnings, overdue notices)
 -  Overview dashboard: total saved, goals completed, etc.
 -  Data persisted locally using `json-server`
+
+## Author
+
+Roy Macharia
+GitHub - roy-macharia

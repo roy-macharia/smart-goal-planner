@@ -1,4 +1,4 @@
-import GoalItem from './GoalItem';
+import GoalItems from './GoalItems';
 
 export default function GoalList({ goals, onUpdate, onDelete }) {
   return (

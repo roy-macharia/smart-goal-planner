@@ -3,6 +3,7 @@
 A Fintech-friendly React application that allows users to manage multiple savings goals, track progress, make deposits, and get insights on their overall financial objectives.
 
 ---
+Deployed [smart-goal-planner-production.up.railway.app]
 
 ##  Features
 

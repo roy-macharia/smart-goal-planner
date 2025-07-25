@@ -1,45 +1,38 @@
 import { useEffect, useState } from 'react';
-import { getGoals, createGoal, updateGoal, deleteGoal } from './services/api';
-import GoalList from './components/GoalList';
 import AddGoalForm from './components/AddGoalForm';
+import GoalList from './components/GoalList';
 import DepositForm from './components/DepositForm';
-import Overview from './components/Overview';
+import OverviewDashboard from './components/Overview';
 
-function App() {
+export default function App() {
   const [goals, setGoals] = useState([]);
 
-  useEffect(() => {
-    getGoals().then(res => setGoals(res.data));
-  }, []);
-
-  const handleAddGoal = async (goal) => {
-    const res = await createGoal(goal);
-    setGoals([...goals, res.data]);
+  const loadGoals = async () => {
+    try {
+      const res = await fetch('http://localhost:3000/goals');
+      if (!res.ok) throw new Error('Failed to fetch');
+      const data = await res.json();
+      setGoals(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleUpdateGoal = async (id, updates) => {
-    await updateGoal(id, updates);
-    setGoals(goals.map(goal => goal.id === id ? { ...goal, ...updates } : goal));
-  };
+  useEffect(() => { loadGoals(); }, []);
 
-  const handleDeleteGoal = async (id) => {
-    await deleteGoal(id);
-    setGoals(goals.filter(goal => goal.id !== id));
+  const handleAdd = () => loadGoals();
+  const handleDelete = async id => {
+    await fetch(`http://localhost:3000/goals/${id}`, { method: 'DELETE' });
+    loadGoals();
   };
+  const handleDeposit = () => loadGoals();
 
   return (
-    <div className="container">
-      <h1>🎯 Smart Goal Planner</h1>
-      <Overview goals={goals} />
-      <AddGoalForm onAddGoal={handleAddGoal} />
-      <DepositForm goals={goals} onDeposit={handleUpdateGoal} />
-      <GoalList
-        goals={goals}
-        onUpdate={handleUpdateGoal}
-        onDelete={handleDeleteGoal}
-      />
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <OverviewDashboard goals={goals} />
+      <AddGoalForm onAdd={handleAdd} />
+      <DepositForm goals={goals} onDeposit={handleDeposit} />
+      <GoalList goals={goals} onDelete={handleDelete} />
     </div>
   );
 }
-
-export default App;

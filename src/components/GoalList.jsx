@@ -1,16 +1,9 @@
-import GoalItems from './GoalItems';
-
-export default function GoalList({ goals, onUpdate, onDelete }) {
+import GoalItem from './GoalItems';
+export default function GoalList({ goals, onDelete }) {
   return (
-    <div>
-      <h2>Your Goals</h2>
+    <div className="grid gap-4">
       {goals.map(goal => (
-        <GoalItem
-          key={goal.id}
-          goal={goal}
-          onUpdate={onUpdate}
-          onDelete={onDelete}
-        />
+        <GoalItem key={goal.id} goal={goal} onDelete={onDelete} />
       ))}
     </div>
   );

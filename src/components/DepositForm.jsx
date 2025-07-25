@@ -1,28 +1,30 @@
 import { useState } from 'react';
-
 export default function DepositForm({ goals, onDeposit }) {
-  const [goalId, setGoalId] = useState('');
+  const [goalId, setGoalId] = useState(goals[0]?.id || '');
   const [amount, setAmount] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    const selected = goals.find(g => g.id === goalId);
-    if (!selected) return;
-    const newAmount = parseFloat(selected.savedAmount) + parseFloat(amount);
-    onDeposit(goalId, { savedAmount: newAmount });
+    const goal = goals.find(g => g.id === parseInt(goalId));
+    if (!goal) return;
+    const newAmount = goal.savedAmount + parseFloat(amount);
+    await fetch(`http://localhost:3000/goals/${goalId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ savedAmount: newAmount })
+    });
     setAmount('');
+    onDeposit();
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Make a Deposit</h2>
+    <form onSubmit={handleSubmit} className="card">
+      <h2 className="text-xl font-semibold mb-4">Make a Deposit</h2>
       <select value={goalId} onChange={e => setGoalId(e.target.value)} required>
-        <option value="">Select Goal</option>
-        {goals.map(goal => (
-          <option key={goal.id} value={goal.id}>{goal.name}</option>
-        ))}
+        <option value="" disabled>Select goal</option>
+        {goals.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
       </select>
-      <input type="number" placeholder="Amount" value={amount} onChange={e => setAmount(e.target.value)} required />
+      <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Amount" required />
       <button type="submit">Deposit</button>
     </form>
   );
